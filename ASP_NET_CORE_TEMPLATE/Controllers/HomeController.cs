@@ -1,5 +1,8 @@
 ﻿using ASP_NET_CORE_TEMPLATE.Models;
+using Data;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ASP_NET_CORE_TEMPLATE.Controllers
@@ -13,11 +16,18 @@ namespace ASP_NET_CORE_TEMPLATE.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        async public Task<IActionResult> Index()
         {
-            StudentDetail studentDetail = new StudentDetail() { Name = "KT"};
+           
 
-            return View(studentDetail);
+            HttpClient client = new HttpClient();
+            var data = await client.GetAsync("https://localhost:7120/HocSinh");
+
+            var res = await data.Content.ReadAsStringAsync();
+
+            var dataJson = JsonConvert.DeserializeObject<HocSinhDetail>(res);
+
+            return View(dataJson);
         }
 
         public IActionResult Privacy()
